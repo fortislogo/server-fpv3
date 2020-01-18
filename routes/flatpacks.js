@@ -4,6 +4,7 @@ const router = express.Router();
 
 const jobController = require('../controllers/jobController');
 const userController = require('../controllers/userController');
+const customerController = require('../controllers/customerController');
 const { catchErrors } = require('../errorhandlers');
 
 router.get('/getproductbyId/:id', catchErrors(jobController.getproductbyId));
@@ -43,6 +44,10 @@ router.get('/getuser/:id', catchErrors(userController.getuserbyId));
 router.post('/adduser', catchErrors(userController.addUser));
 router.post('/updateuser', catchErrors(userController.updateUser));
 router.get('/getuserbyemail/:email', catchErrors(userController.getUserbyEmail));
+
+router.post('/login', catchErrors(customerController.login));
+router.post('/register', catchErrors(customerController.register));
+router.post('/getcustomer', catchErrors(customerController.getCustomer));
 
 module.exports = router;
 

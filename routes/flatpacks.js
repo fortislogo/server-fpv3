@@ -4,6 +4,7 @@ const router = express.Router();
 
 const jobController = require('../controllers/jobController');
 const userController = require('../controllers/userController');
+const customerController = require('../controllers/customerController');
 const { catchErrors } = require('../errorhandlers');
 
 router.get('/getproductbyId/:id', catchErrors(jobController.getproductbyId));

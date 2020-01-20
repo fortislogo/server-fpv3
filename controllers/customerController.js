@@ -4,12 +4,13 @@ const fs = require('fs');
 var nodemailer = require("nodemailer")
 var sgTransport = require('nodemailer-sendgrid-transport');
 
-connection = mysql.createConnection({
-    host: 'arfo8ynm6olw6vpn.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
-    user: 'h64g4u33wukzkbi5',
-    password: 'ioqqzjqjadtzaegr',
-    database: 'vndr65p9ujtwnrcx'
-});
+/*connection = mysql.createConnection({
+     host    : 'localhost',
+     user    : 'root',
+     database: 'flatpacks',
+     password: ''
+ });
+>>>>>>> a71c47e714c6dc08245a1ccb61175e84a829a856
 
 connection.connect(function (err) {
   if (!err) {
@@ -17,14 +18,15 @@ connection.connect(function (err) {
   } else {
       console.log("Error connecting Local database local db", err);
   }
-});
+});*/
 
-/*connection = mysql.createConnection({
+connection = mysql.createConnection({
     host: 'arfo8ynm6olw6vpn.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
     user: 'h64g4u33wukzkbi5',
     password: 'ioqqzjqjadtzaegr',
     database: 'vndr65p9ujtwnrcx'
 });
+
 
 connection.connect(function (err) {
     if (!err) {
@@ -32,7 +34,7 @@ connection.connect(function (err) {
     } else {
         console.log("Error connecting Local database flatpacksdb", err);
     }
-});*/
+});
 
 exports.login = async(req, res) => {
   var email = req.body.email;

@@ -161,3 +161,23 @@ exports.userChangePassword = async (req, res) => {
             }
         })
 };
+exports.updateCustomer = async (req, res) => {
+    var CustomerId = req.body.CustomerId;
+    var MobileNumber = req.body.MobileNumber;
+    var Name = req.body.Name;
+	
+    db.query('UPDATE customer SET MobileNumber = ?, Name = ? WHERE CustomerId = ?',
+        [MobileNumber, Name, CustomerId],
+        function (err, result) {
+            if (!err) {
+                if (result.affectedRows != 0) {
+                    res.send({
+                        "success": "true",
+                        response: result
+                    });
+                }
+            } else {
+                res.status(400).send(err);
+            }
+        })
+};

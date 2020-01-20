@@ -50,6 +50,7 @@ router.post('/changepassword', catchErrors(userController.userChangePassword));
 router.post('/login', catchErrors(customerController.login));
 router.post('/register', catchErrors(customerController.register));
 router.post('/getcustomer', catchErrors(customerController.getCustomer));
+router.post('/updatecustomer', catchErrors(customerController.updateCustomer));
 
 module.exports = router;
 

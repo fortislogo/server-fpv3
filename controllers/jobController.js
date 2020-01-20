@@ -31,7 +31,7 @@ exports.getAllProducts = async(req, res) => {
         if (!err) {
             res.send(rows);
         } else {
-            res.status(400).sender(err)
+            res.status(400).send(err)
         }
     });
 };
@@ -41,7 +41,7 @@ exports.getAllSubCategories = async(req, res) => {
         if (!err) {
             res.send(rows);
         } else {
-            res.status(400).sender(err)
+            res.status(400).send(err)
         }
     });
 };

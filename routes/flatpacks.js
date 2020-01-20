@@ -44,12 +44,13 @@ router.get('/getuser/:id', catchErrors(userController.getuserbyId));
 router.post('/adduser', catchErrors(userController.addUser));
 router.post('/updateuser', catchErrors(userController.updateUser));
 router.get('/getuserbyemail/:email', catchErrors(userController.getUserbyEmail));
-router.post('/userlogin', catchErrors(userController.userLogin));
-router.post('/changepassword', catchErrors(userController.userChangePassword));
+router.get('/userogin/:email', catchErrors(userController.userLogin));
+router.get('/changepassword/:email', catchErrors(userController.userChangePassword));
 
 router.post('/login', catchErrors(customerController.login));
 router.post('/register', catchErrors(customerController.register));
 router.post('/getcustomer', catchErrors(customerController.getCustomer));
+
 module.exports = router;
 
 

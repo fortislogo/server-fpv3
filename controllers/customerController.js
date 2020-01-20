@@ -10,7 +10,7 @@ var sgTransport = require('nodemailer-sendgrid-transport');
      database: 'flatpacks',
      password: ''
  });
->>>>>>> a71c47e714c6dc08245a1ccb61175e84a829a856
+
 
 connection.connect(function (err) {
   if (!err) {

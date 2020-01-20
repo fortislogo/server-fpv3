@@ -1,5 +1,8 @@
 var db = require('../dbWrapper');
-
+var multer = require("multer");
+const fs = require('fs');
+var nodemailer = require("nodemailer")
+var sgTransport = require('nodemailer-sendgrid-transport');
 //GET users from the backenduser table
 exports.getusers = async (req, res) => {
     db.query('SELECT Id, Name, Phone, Email, Password, IsActive, UserRole, CreatedDate FROM backendUser ORDER BY Name ASC', function (err, rows) {

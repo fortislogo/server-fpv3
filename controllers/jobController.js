@@ -1,6 +1,7 @@
-var mysql = require('mysql2');
+//var mysql = require('mysql2');
 var multer = require("multer");
 const fs = require('fs');
+const db = require('../dbWrapper');
 var nodemailer = require("nodemailer")
 var sgTransport = require('nodemailer-sendgrid-transport');
 /*
@@ -10,7 +11,7 @@ var sgTransport = require('nodemailer-sendgrid-transport');
      database: 'flatpacks',
      password: ''
  });
-*/
+
 connection = mysql.createConnection({
     host: 'arfo8ynm6olw6vpn.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
     user: 'h64g4u33wukzkbi5',
@@ -18,7 +19,8 @@ connection = mysql.createConnection({
     database: 'vndr65p9ujtwnrcx'
 });
 
-connection.connect(function (err) {
+
+db.connect(function (err) {
     if (!err) {
         console.log("Local Database is connected to flatpacksdb");
     } else {
@@ -26,8 +28,10 @@ connection.connect(function (err) {
     }
 });
 
+*/
+
 exports.getAllProducts = async(req, res) => {
-    connection.query('SELECT * FROM product', function(err, rows) {
+    db.query('SELECT * FROM product', function(err, rows) {
         if (!err) {
             res.send(rows);
         } else {
@@ -37,7 +41,7 @@ exports.getAllProducts = async(req, res) => {
 };
 
 exports.getAllSubCategories = async(req, res) => {
-    connection.query('SELECT * FROM productsubcategory', function(err, rows) {
+    db.query('SELECT * FROM productsubcategory', function(err, rows) {
         if (!err) {
             res.send(rows);
         } else {
@@ -48,7 +52,7 @@ exports.getAllSubCategories = async(req, res) => {
 
 //GET product category from the product category table
 exports.getcategory = async (req, res) => {
-    connection.query('SELECT * FROM productcategory', function (err, rows) {
+    db.query('SELECT * FROM productcategory', function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -64,7 +68,7 @@ exports.getcategory = async (req, res) => {
 
 //GET gst  from the default table
 exports.getgst = async (req, res) => {
-    connection.query('SELECT * FROM `default`', function (err, rows) {
+    db.query('SELECT * FROM `default`', function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -81,13 +85,13 @@ exports.getgst = async (req, res) => {
 //GET product category from the product category table
 exports.getsubcategory = async (req, res) => {
     var id = req.params.id;
-    connection.query('SELECT * FROM productsubcategory WHERE ProductCategoryId = ?', [id], function (err, rows) {
+    db.query('SELECT * FROM productsubcategory WHERE ProductCategoryId = ?', [id], function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
             } else {
                 console.log("get subcategory " + id)
-                connection.query('SELECT * FROM product WHERE ProductCategoryId = ?', [id], function (err, products) {
+                db.query('SELECT * FROM product WHERE ProductCategoryId = ?', [id], function (err, products) {
                     if (!err) {
                         if (products.length != 0) {
                             res.send(products)
@@ -109,7 +113,7 @@ exports.getsubcategory = async (req, res) => {
 exports.getproducts = async (req, res) => {
     var id = req.params.id;
     console.log("sub cat id:::", id)
-    connection.query('SELECT product.ProductName,product.ProductId FROM product INNER JOIN productsubcategory ON product.ProductSubCategoryId=productsubcategory.ProductSubCategoryId where productsubcategory.ProductSubCategoryId=?', [id], function (err, rows) {
+    db.query('SELECT product.ProductName,product.ProductId FROM product INNER JOIN productsubcategory ON product.ProductSubCategoryId=productsubcategory.ProductSubCategoryId where productsubcategory.ProductSubCategoryId=?', [id], function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -126,7 +130,7 @@ exports.getproducts = async (req, res) => {
 //GET product by id from the product table
 exports.getproductbyId = async (req, res) => {
     var id = req.params.id;
-    connection.query('SELECT * FROM product WHERE ProductId = ?', [id], function (err, rows) {
+    db.query('SELECT * FROM product WHERE ProductId = ?', [id], function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -143,7 +147,7 @@ exports.getproductbyId = async (req, res) => {
 //GET material from the sections table
 exports.getmaterial = async (req, res) => {
     var id = req.params.id;
-    connection.query('SELECT section.Section, productsection.SectionId,productsection.ProductSectionId FROM section INNER JOIN productsection ON section.SectionId = productsection.SectionId where productsection.ProductId = ?', [id], function (err, rows) {
+    db.query('SELECT section.Section, productsection.SectionId,productsection.ProductSectionId FROM section INNER JOIN productsection ON section.SectionId = productsection.SectionId where productsection.ProductId = ?', [id], function (err, rows) {
         if (!err) {
             if (rows.length !=0) {
                 res.send(rows)
@@ -159,7 +163,7 @@ exports.getmaterial = async (req, res) => {
 
 //GET material types from the material type table
 exports.getmaterialtype = async (req, res) => {
-    connection.query('SELECT * FROM materialtype', function (err, rows) {
+    db.query('SELECT * FROM materialtype', function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -175,7 +179,7 @@ exports.getmaterialtype = async (req, res) => {
 
 //GET door style from the door table
 exports.getdoorstyle = async (req, res) => {
-    connection.query('SELECT * FROM door', function (err, rows) {
+    db.query('SELECT * FROM door', function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -191,7 +195,7 @@ exports.getdoorstyle = async (req, res) => {
 
 //GET brand from the brand table
 exports.getbrand = async (req, res) => {
-    connection.query('SELECT * FROM brand', function (err, rows) {
+    db.query('SELECT * FROM brand', function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -208,7 +212,7 @@ exports.getbrand = async (req, res) => {
 //GET colour by brand id from the colour table
 exports.getcolour = async (req, res) => {
     var id = req.params.id;
-    connection.query('SELECT * FROM colour WHERE BrandId = ?', [id], function (err, rows) {
+    db.query('SELECT * FROM colour WHERE BrandId = ?', [id], function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -225,7 +229,7 @@ exports.getcolour = async (req, res) => {
 //GET finish by brand id from the finish table
 exports.getfinish = async (req, res) => {
     var id = req.params.id;
-    connection.query('SELECT * FROM finish WHERE BrandId = ?', [id], function (err, rows) {
+    db.query('SELECT * FROM finish WHERE BrandId = ?', [id], function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -241,7 +245,7 @@ exports.getfinish = async (req, res) => {
 
 //GET substrate from the brand table
 exports.getsubstrate = async (req, res) => {
-    connection.query('SELECT * FROM substrate', function (err, rows) {
+    db.query('SELECT * FROM substrate', function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -257,7 +261,7 @@ exports.getsubstrate = async (req, res) => {
 
 //GET door hinge from the hinge table
 exports.getdoorhinge = async (req, res) => {
-    connection.query('SELECT * FROM hinge', function (err, rows) {
+    db.query('SELECT * FROM hinge', function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -273,7 +277,7 @@ exports.getdoorhinge = async (req, res) => {
 
 //GET shelve from the shelve table
 exports.getshelves = async (req, res) => {
-    connection.query('SELECT * FROM shelve', function (err, rows) {
+    db.query('SELECT * FROM shelve', function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -289,7 +293,7 @@ exports.getshelves = async (req, res) => {
 
 //GET hardware from the shelve table
 exports.gethardware = async (req, res) => {
-    connection.query('SELECT * FROM hardware', function (err, rows) {
+    db.query('SELECT * FROM hardware', function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -317,7 +321,7 @@ exports.addJob = async (req, res) => {
     var status="Pending"
     var orderDate=new Date();
     var TotalCost=req.body.TotalCost
-    connection.query('INSERT INTO job(ClientName, email, ContactNo, Status, OrderDate,TotalCost ) VALUES (?,?,?,?,?,?)',
+    db.query('INSERT INTO job(ClientName, email, ContactNo, Status, OrderDate,TotalCost ) VALUES (?,?,?,?,?,?)',
         [clientname, jobemail, jobcontactnumber,status,orderDate,TotalCost],
             function (err, result) {
                 if (!err) {
@@ -358,7 +362,7 @@ addjobproduct = (jobProduct,jobMaterial,jobDoor,hinge,shelve,hardware,jobId,res)
         typeof product.toeHeight !== undefined &&
         typeof product.toeRecess !== undefined &&
         typeof product.roomId !== undefined) {
-        connection.query('INSERT INTO jobproduct( JobId, ProductId, Width, Height, Depth, Elevation, SoffitHeight, ToeHeight, ToeRecess,RoomId,StockCode,StockCodeStatusFlag,MaterialCost,DoorsCost,HardwareCost,ShelvesCost,Price) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+        db.query('INSERT INTO jobproduct( JobId, ProductId, Width, Height, Depth, Elevation, SoffitHeight, ToeHeight, ToeRecess,RoomId,StockCode,StockCodeStatusFlag,MaterialCost,DoorsCost,HardwareCost,ShelvesCost,Price) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
             [jobId, product.ProductId, product.Width, product.Height, product.Depth, product.Elevation, product.SoffitHeight, product.ToeHeight, product.ToeRecess, product.roomData,product.productStockCode,product.productStockFlag,product.MaterialCost,product.DoorsCost,product.HardwareCost,product.ShelvesCost,product.Price],
             function (err, result) {
                 if (!err) {
@@ -390,7 +394,7 @@ addjobmaterial = (jobMaterial, jobProductId) => {
                 typeof jobmaterial.finishId !== 'undefined' &&
                 typeof jobmaterial.substrateId !== 'undefined' &&
                 typeof jobmaterial.colourId !== 'undefined') {
-                connection.query('INSERT INTO jobproductmaterialparams( JobProductId, ProductSectionId, MaterialId, BrandId, FinishId, SubstrateId, ColourId) VALUES (?,?,?,?,?,?,?)',
+                db.query('INSERT INTO jobproductmaterialparams( JobProductId, ProductSectionId, MaterialId, BrandId, FinishId, SubstrateId, ColourId) VALUES (?,?,?,?,?,?,?)',
                     [jobProductId, jobmaterial.productSectionId, jobmaterial.materialId, jobmaterial.brandId, jobmaterial.finishId, jobmaterial.substrateId, jobmaterial.colourId],
     
                     function (err, result) {
@@ -413,7 +417,7 @@ addDoor = (jobDoor, jobProductId) => {
         typeof jobDoor.gapBottom !== 'undefined' &&
         typeof jobDoor.gapLeft !== 'undefined' &&
         typeof jobDoor.gapRight !== 'undefined') {
-        connection.query('INSERT INTO jobproductdoor( DoorId, JobProductId, GapTop, GapBottom, GapLeft, GapRight, Cost) VALUES (?,?,?,?,?,?,?)',
+        db.query('INSERT INTO jobproductdoor( DoorId, JobProductId, GapTop, GapBottom, GapLeft, GapRight, Cost) VALUES (?,?,?,?,?,?,?)',
             [jobDoor.doorId, jobProductId, jobDoor.gapTop, jobDoor.gapBottom, jobDoor.gapLeft, jobDoor.gapRight,jobDoor.doorsCost],
             function (err, result) {               
                 console.log("door product")
@@ -426,7 +430,7 @@ addDoor = (jobDoor, jobProductId) => {
 addHinge = (hinge, jobProductId) => {
     if (typeof jobProductId !== 'undefined' &&
         typeof hinge.hingeId !== 'undefined') {
-        connection.query('INSERT INTO jobproducthinge( JobProductId, HingeId) VALUES (?,?)',
+        db.query('INSERT INTO jobproducthinge( JobProductId, HingeId) VALUES (?,?)',
             [jobProductId, hinge.hingeId],
             function (err, result) {
                 console.log("hinge success")
@@ -440,7 +444,7 @@ addShelve = (shelve, jobProductId) => {
     if (typeof jobProductId !== 'undefined' &&
         typeof shelve.shelveId !== 'undefined' &&
         typeof shelve.noOfShelves !== 'undefined') {
-        connection.query('INSERT INTO jobproductshelve( JobProductId, ShelveId, NoOfShelves, Cost) VALUES (?,?,?,?)',
+        db.query('INSERT INTO jobproductshelve( JobProductId, ShelveId, NoOfShelves, Cost) VALUES (?,?,?,?)',
             [jobProductId, shelve.shelveId, shelve.noOfShelves,shelve.shelvesCost],
             function (err, result) {
                 console.log("shelves success")
@@ -452,7 +456,7 @@ addShelve = (shelve, jobProductId) => {
 addHardware = (hardware, jobProductId) => {
     if (typeof jobProductId !== 'undefined' &&
         typeof hardware.hardwareId !== 'undefined') {
-        connection.query('INSERT INTO jobproducthardware( JobProductId, HardwareId) VALUES (?,?)',
+        db.query('INSERT INTO jobproducthardware( JobProductId, HardwareId) VALUES (?,?)',
             [jobProductId, hardware.hardwareId],
             function (err, result) {
                 console.log("hardware success")
@@ -465,7 +469,7 @@ addHardware = (hardware, jobProductId) => {
 exports.getProductListOfSelectedJob = async (req, res) => {
     var id=req.params.id
     var plQuery = "SELECT jp.JobProductId , p.ProductName , jp.Width ,jp.Height, jp.Depth ,jp.StockCode,jp.StockCodeStatusFlag,jp.Price,jp.MaterialCost,jp.DoorsCost,jp.HardwareCost,jp.ShelvesCost,d.DoorName ,h.HingeType ,pc.Category ,s.ShelveName , jps.NoOfShelves ,hd.HardwareName,jpd.GapTop,jpd.GapBottom,jpd.GapLeft,jpd.GapRight FROM jobproduct jp LEFT JOIN product p ON jp.ProductId = p.ProductId LEFT JOIN jobproductdoor jpd ON jp.JobProductId = jpd.JobProductId LEFT JOIN door d ON jpd.DoorId = d.DoorId LEFT JOIN jobproducthinge jph ON jp.JobProductId = jph.JobproductId LEFT JOIN hinge h ON jph.HingeId = h.HingeId LEFT JOIN productcategory pc ON p.ProductCategoryId = pc.ProductCategoryId LEFT JOIN jobproductshelve jps ON jp.JobProductId = jps.JobProductId LEFT JOIN shelve s ON jps.ShelveId = s.ShelveId LEFT JOIN jobproducthardware jphd ON jp.JobProductId = jphd.JobproductId LEFT JOIN hardware hd ON jphd.HardwareId = hd.HardwareId WHERE jp.JobId = ?  ORDER BY jp.JobProductId DESC"
-    connection.query(plQuery,[id], function (err, rows) {
+    db.query(plQuery,[id], function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -485,7 +489,7 @@ exports.getMaterialListOfSelectedProduct = async (req, res) => {
     var id = req.params.id;
     var plQuery = "SELECT s.Section , mt.materialtype, b.BrandName ,f.FinishName ,st.SubstrateName ,c.ColourName FROM jobproduct jp LEFT JOIN jobproductmaterialparams jpmp ON jp.JobProductId = jpmp.JobProductId LEFT JOIN productsection ps ON jpmp.ProductSectionId= ps.ProductSectionId LEFT JOIN section s ON ps.SectionId = s.SectionId  LEFT JOIN brand b ON jpmp.BrandId = b.BrandId LEFT JOIN finish f ON jpmp.FinishId = f.FinishId LEFT JOIN substrate st ON jpmp.SubstrateId = st.SubstrateId LEFT JOIN colour c ON jpmp.ColourId = c.ColourId LEFT JOIN materialtype mt ON jpmp.MaterialId = mt.MaterialTypeId WHERE jp.JobProductId = ?"
 
-    connection.query(plQuery, [id], function (err, rows) {
+    db.query(plQuery, [id], function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -504,7 +508,7 @@ exports.addroom = async (req, res) => {
     console.log("roomdata",req.body)
     var roomName = req.body.roomName
     if (typeof roomName !== 'undefined') {
-        connection.query('INSERT INTO room (RoomName) VALUES (?)',
+        db.query('INSERT INTO room (RoomName) VALUES (?)',
             [roomName],
             function (err, result) {
                 if (!err) {
@@ -524,7 +528,7 @@ exports.addroom = async (req, res) => {
 
 //GET rooms from the room table
 exports.getrooms = async (req, res) => {
-    connection.query('SELECT * FROM room', function (err, rows) {
+    db.query('SELECT * FROM room', function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -541,7 +545,7 @@ exports.getrooms = async (req, res) => {
 //GET rooms by jobproductId from the room table
 exports.getroomslist = async (req, res) => {
     var id = req.params.id;
-    connection.query('SELECT room.RoomId, room.RoomName FROM jobproduct INNER JOIN room ON jobproduct.RoomId= room.RoomId where jobproduct.JobId=1 GROUP BY room.RoomId',[id],  function (err, rows) {
+    db.query('SELECT room.RoomId, room.RoomName FROM jobproduct INNER JOIN room ON jobproduct.RoomId= room.RoomId where jobproduct.JobId=1 GROUP BY room.RoomId',[id],  function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -558,7 +562,7 @@ exports.getroomslist = async (req, res) => {
 //GET rooms by jobproductId from the room table
 exports.getproductsinroom = async (req, res) => {
     var id = req.params.id;
-    connection.query('SELECT jp.JobProductId , p.ProductName, p.ProductId , jp.Width ,jp.Height, jp.Depth,jp.ToeRecess, jp.ToeHeight,jp.Elevation,jp.SoffitHeight ,d.DoorName ,h.HingeType,h.HingeId ,pc.Category ,s.ShelveName , jps.NoOfShelves ,hd.HardwareName FROM jobproduct jp LEFT JOIN product p ON jp.ProductId = p.ProductId LEFT JOIN jobproductdoor jpd ON jp.JobProductId = jpd.DoorId LEFT JOIN door d ON jpd.DoorId = d.DoorId LEFT JOIN jobproducthinge jph ON jp.JobProductId = jph.JobproductId LEFT JOIN hinge h ON jph.HingeId = h.HingeId LEFT JOIN productcategory pc ON p.ProductCategoryId = pc.ProductCategoryId LEFT JOIN jobproductshelve jps ON jp.JobProductId = jps.JobProductId LEFT JOIN shelve s ON jps.ShelveId = s.ShelveId LEFT JOIN jobproducthardware jphd ON jp.JobProductId = jphd.JobproductId LEFT JOIN hardware hd ON jphd.HardwareId = hd.HardwareId WHERE jp.JobId = ? AND jp.IsDeleted=0',[id],  function (err, rows) {
+    db.query('SELECT jp.JobProductId , p.ProductName, p.ProductId , jp.Width ,jp.Height, jp.Depth,jp.ToeRecess, jp.ToeHeight,jp.Elevation,jp.SoffitHeight ,d.DoorName ,h.HingeType,h.HingeId ,pc.Category ,s.ShelveName , jps.NoOfShelves ,hd.HardwareName FROM jobproduct jp LEFT JOIN product p ON jp.ProductId = p.ProductId LEFT JOIN jobproductdoor jpd ON jp.JobProductId = jpd.DoorId LEFT JOIN door d ON jpd.DoorId = d.DoorId LEFT JOIN jobproducthinge jph ON jp.JobProductId = jph.JobproductId LEFT JOIN hinge h ON jph.HingeId = h.HingeId LEFT JOIN productcategory pc ON p.ProductCategoryId = pc.ProductCategoryId LEFT JOIN jobproductshelve jps ON jp.JobProductId = jps.JobProductId LEFT JOIN shelve s ON jps.ShelveId = s.ShelveId LEFT JOIN jobproducthardware jphd ON jp.JobProductId = jphd.JobproductId LEFT JOIN hardware hd ON jphd.HardwareId = hd.HardwareId WHERE jp.JobId = ? AND jp.IsDeleted=0',[id],  function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -574,7 +578,7 @@ exports.getproductsinroom = async (req, res) => {
 
 //GET jobList 
 exports.getJobsList = async (req, res) => {
-    connection.query('SELECT * FROM job  ORDER BY JobId DESC',  function (err, rows) {
+    db.query('SELECT * FROM job  ORDER BY JobId DESC',  function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -595,7 +599,7 @@ exports.updateproductinroom= async(req,res)=>{
     var isDeleted = req.body.productKey
     console.log("isDeleted:::"+isDeleted)
     if (typeof isDeleted !== 'undefined') {
-        connection.query('UPDATE jobproduct SET IsDeleted = ? WHERE JobProductId = ?',
+        db.query('UPDATE jobproduct SET IsDeleted = ? WHERE JobProductId = ?',
             [isDeleted, id],
             function(err, result) {
                 if (!err){
@@ -619,7 +623,7 @@ exports.updatejob = async (req, res) => {
     var jobstatus = req.body.jobstatus
     var remark = req.body.remark
     console.log('api called', id, jobstatus, remark)
-    connection.query('UPDATE job SET Status = ?  WHERE JobId = ?',
+    db.query('UPDATE job SET Status = ?  WHERE JobId = ?',
         [jobstatus, id],
         function (err, result) {
             if (!err) {
@@ -643,7 +647,7 @@ addremark = (remark, jobId) => {
     console.log(remark,jobId)
     var remark = remark
     var jobid=jobId
-    connection.query('INSERT INTO remark(Remark, JobId) VALUES (?,?)',
+    db.query('INSERT INTO remark(Remark, JobId) VALUES (?,?)',
         [remark, jobid],
         function (err, result) {
             if (!err) {
@@ -678,7 +682,7 @@ exports.addquotationupload = async (req, res) => {
         } else if (err) {
             return res.status(500).json(err)
         } else { 
-            connection.query('INSERT INTO jobquotation(JobId,Remark, FilePath,UploadedDate,Status) VALUES (?,?,?,?,?)',
+            db.query('INSERT INTO jobquotation(JobId,Remark, FilePath,UploadedDate,Status) VALUES (?,?,?,?,?)',
         [jobid,remark, filePath,date,status],
         function (err, result) {
             if (!err) {
@@ -723,7 +727,7 @@ exports.addquotationupload = async (req, res) => {
  updateJobStatus = (jobId,status) => {
     var jobstatus = status
     var jobid=jobId
-    connection.query('UPDATE job SET Status = ?  WHERE JobId = ?',
+    db.query('UPDATE job SET Status = ?  WHERE JobId = ?',
     [jobstatus, jobid],
         function (err, result) {
             if (!err) {
@@ -761,7 +765,7 @@ exports.resendQuotation = async (req, res) => {
     console.log('job::', job)
     let id = job.JobId;
     let to = job.Email;
-    connection.query('SELECT * FROM jobquotation jq INNER JOIN job j ON jq.JobId=j.JobId WHERE jq.JobId= ?', [id], function (err, rows) {
+    db.query('SELECT * FROM jobquotation jq INNER JOIN job j ON jq.JobId=j.JobId WHERE jq.JobId= ?', [id], function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 // res.send(rows)
@@ -807,7 +811,7 @@ exports.resendQuotation = async (req, res) => {
 
 //GET ProductStockCodes from the product category table
 exports.getProductStockCodes = async (req, res) => {
-    connection.query('SELECT * FROM ProductStockCode', function (err, rows) {
+    db.query('SELECT * FROM ProductStockCode', function (err, rows) {
         if (!err) {
             if (rows.length != 0) {
                 res.send(rows)
@@ -820,3 +824,14 @@ exports.getProductStockCodes = async (req, res) => {
         }
     });
 };
+
+exports.getCustomerJob = async(req, res) => {
+    var customerId = req.params.id;
+    db.query("SELECT * FROM job WHERE CustomerId = ?", [customerId], function(err, rows) {
+      if (!err) {
+        
+          res.send(rows);
+        
+      }
+    });
+  };

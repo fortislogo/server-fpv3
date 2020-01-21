@@ -32,7 +32,10 @@ router.get('/getProductListOfSelectedJob/:id', catchErrors(jobController.getProd
 router.get('/getMaterialListOfSelectedProduct/:id', catchErrors(jobController.getMaterialListOfSelectedProduct));
 router.post('/updateproductinroom/:id', catchErrors(jobController.updateproductinroom));
 router.post('/geteditproduct', catchErrors(jobController.geteditproduct));
+
 router.get('/getjoblist', catchErrors(jobController.getJobsList));
+router.get('/getcustomerjob/:id', catchErrors(jobController.getCustomerJob));
+
 router.post('/updatejob/:id', catchErrors(jobController.updatejob));
 router.post('/addquotationupload', catchErrors(jobController.addquotationupload));
 router.post('/resendquotation', catchErrors(jobController.resendQuotation));

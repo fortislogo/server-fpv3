@@ -36,6 +36,16 @@ router.post('/geteditproduct', catchErrors(jobController.geteditproduct));
 router.get('/getjoblist', catchErrors(jobController.getJobsList));
 router.get('/getcustomerjob/:id', catchErrors(jobController.getCustomerJob));
 
+router.get('/getJobProducts/:id', catchErrors(jobController.getJobProducts));
+
+router.get('/getJobMaterials/:id', catchErrors(jobController.getJobProducts));
+router.get('/getJobDoors/:id', catchErrors(jobController.getJobDoors));
+router.get('/getJobHinges/:id', catchErrors(jobController.getJobHinges));
+router.get('/getJobShelves/:id', catchErrors(jobController.getJobShelves));
+router.get('/getJobHardwares/:id', catchErrors(jobController.getJobHardwares));
+
+router.post('/updateJobProduct', catchErrors(jobController.updateJobProduct));
+
 router.post('/updatejob/:id', catchErrors(jobController.updatejob));
 router.post('/addquotationupload', catchErrors(jobController.addquotationupload));
 router.post('/resendquotation', catchErrors(jobController.resendQuotation));

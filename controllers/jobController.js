@@ -827,6 +827,7 @@ exports.getProductStockCodes = async (req, res) => {
 
 exports.getCustomerJob = async(req, res) => {
     var customerId = req.params.id;
+    customerId = 55;
     db.query("SELECT * FROM job WHERE CustomerId = ?", [customerId], function(err, rows) {
       if (!err) {
         
@@ -835,3 +836,133 @@ exports.getCustomerJob = async(req, res) => {
       }
     });
   };
+
+exports.getJobProducts = async(req, res) => {
+    var JobId = req.params.id;
+    db.query("SELECT * FROM jobproduct WHERE JobProductId = ?", [JobId], function(err, rows) {
+      if (!err) {        
+          res.send(rows);        
+      }
+    });
+};
+
+exports.getJobDoors = async(req, res) => {
+    var JobId = req.params.id;
+    db.query("SELECT * FROM jobproductdoor WHERE JobProductId = ?", [JobId], function(err, rows) {
+      if (!err && rows.length > 0) {        
+          res.send(rows[0]);        
+      } else {
+        res.status(400).send(err);
+      }
+    });
+};
+
+exports.getJobHinges = async(req, res) => {
+    var JobId = req.params.id;
+    db.query("SELECT * FROM jobproducthinge WHERE JobProductId = ?", [JobId], function(err, rows) {
+        if (!err && rows.length > 0) {        
+            res.send(rows[0]);        
+        } else {
+          res.status(400).send(err);
+        }
+    });
+};
+
+exports.getJobMaterials = async(req, res) => {
+    var JobId = req.params.id;
+    db.query("SELECT * FROM jobproductmaterialparams WHERE JobProductId = ?", [JobId], function(err, rows) {
+      if (!err) {        
+          res.send(rows);        
+      }
+    });
+};
+
+exports.getJobHardwares = async(req, res) => {
+    var JobId = req.params.id;
+    db.query("SELECT * FROM jobproducthardware WHERE JobProductId = ?", [JobId], function(err, rows) {
+        if (!err && rows.length > 0) {        
+            res.send(rows[0]);        
+        } else {
+          res.status(400).send(err);
+        }
+    });
+};
+
+exports.getJobShelves = async(req, res) => {
+    var JobId = req.params.id;
+    db.query("SELECT * FROM jobproductshelve WHERE JobProductId = ?", [JobId], function(err, rows) {
+        if (!err && rows.length > 0) {        
+            res.send(rows[0]);        
+        } else {
+          res.status(400).send(err);
+        }
+    });
+};
+
+exports.updateJobProduct = async(req, res) => {
+    var JobId = req.body.id;
+
+    const Width = req.body.Width;
+    const Height = req.body.Height; 
+    const Depth  = req.body.Depth;
+    const Elevation  = req.body.Elevation;
+    const SoffitHeight  = req.body.SoffitHeight;
+    const ToeHeight  = req.body.ToeHeight;
+    const ToeRecess  = req.body.ToeRecess;
+    const RoomId  = req.body.RoomId;
+    const StockCode  = req.body.StockCode;
+    const MaterialCost  = req.body.MaterialCost;
+    const DoorsCost  = req.body.DoorsCost;
+    const HardwareCost  = req.body.HardwareCost;
+    const ShelvesCost  = req.body.ShelvesCost;
+    const Price  = req.body.Price;
+    const CarcaseFinalCost  = req.body.CarcaseFinalCost;
+    const DoorFinalCost = req.body.DoorFinalCost;
+
+    const materials = req.body.materials;
+    const doors = req.body.doors;
+    const hinges = req.body.hinges;
+    const shelves = req.body.shelves;
+    const hardwares = req.body.hardwares;
+
+    
+    db.query("UPDATE jobproduct SET Width = ?, Height = ?, Depth = ?, Elevation = ?, SoffitHeight = ?, ToeHeight = ?, ToeRecess = ?, RoomId = ?,     StockCode = ?, MaterialCost = ?, DoorsCost = ?, HardwareCost = ?, ShelvesCost = ?, Price = ?, CarcaseFinalCost = ?,DoorFinalCost = ? WHERE JobProductId = ?", 
+                [
+                    Width, 
+                    Height,
+                    Depth,
+                    Elevation,
+                    SoffitHeight,
+                    ToeHeight,
+                    ToeRecess,
+                    RoomId,
+                    StockCode,
+                    MaterialCost,
+                    DoorsCost,
+                    HardwareCost,
+                    ShelvesCost,
+                    Price,
+                    CarcaseFinalCost,
+                    DoorFinalCost,
+                    JobId
+                ], function(err, rows) {
+      if (!err) {
+          
+            db.query("DELETE FROM jobproductmaterialparams WHERE JobProductId = ?", [JobId]);
+            db.query("DELETE FROM jobproductdoor WHERE JobProductId = ?", [JobId]);
+            db.query("DELETE FROM jobproducthinge WHERE JobProductId = ?", [JobId]);
+            db.query("DELETE FROM jobproductshelve WHERE JobProductId = ?", [JobId]);
+            db.query("DELETE FROM jobproducthardware WHERE JobProductId = ?", [JobId]);
+
+            addjobmaterial(materials, JobId);
+            addDoor(doors, JobId);
+            addHinge(hinges, JobId);
+            addShelve(shelves, JobId);
+            addHardware(hardwares, JobId);
+
+            res.send(rows);        
+      } else {
+        res.status(400).send(err);
+      }
+    });
+};
